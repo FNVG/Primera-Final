@@ -23,7 +23,7 @@ pthread_mutex_t mutexA = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutexB = PTHREAD_MUTEX_INITIALIZER;
 bool encontrado = false;
 sem_t semaphore = {0};
-
+pthread_t IDproceso;
 
 
 struct Dato {
@@ -33,44 +33,19 @@ struct Dato {
 };
 
 
-void *terminal_hilos (void *argcthread) {
-  printf("\nAntes\n");
 
-   if (sem_wait(&semaphore) != 0) {
-        printf("ERROR: En WAIT");
-      exit(EXIT_FAILURE);
-   } 
-
-  printf("\nDespues\n");
-  
-  encontrado = true;
- 
- 
-  return NULL;
-}
-void avanzar() {
-
-  
-  if (sem_post(&semaphore) !=0 ) {
-   printf("ERROR: en POST");
-    exit(EXIT_FAILURE);
- } else {
-    printf("\n\n");
- }
-  
-  
-}
 
 void *threat_function(void *argcthread) {
 pthread_mutex_lock(&mutexB);
 struct Dato argumento = *(struct Dato*) argcthread;  
  int i = argumento.comienzo;
-  int ret2=0;
+
   while ((i <= argumento.final) && (!encontrado)) {  
     if (vector[i] == numeroBuscado) {
      posicion = i;
-     printf("\nHilo %d encontro el numero primero\n", 
-   argumento.id);    
+     printf("\n[Encontrado] Hilo %d encontro el numero\n", 
+   argumento.id);   
+    IDproceso = pthread_self();
     encontrado = true;
       }
    i++;
@@ -84,13 +59,9 @@ struct Dato argumento = *(struct Dato*) argcthread;
 int main(int argc, char *argv[]) {
  int lower = 0, upper = 9, count = 1;
 pthread_t tid_signal;
- sem_init(&semaphore,0,0);
    int VALUE = 0;
 
- /* sema =  *sem_open("/semaforo", O_CREAT,S_IRWXU|S_IRWXG|S_IRWXO,0);
-  */
-//O_CREAT,S_IRWXU|S_IRWXG|S_IRWXO
-  
+  printf("\n--------Vector---------\n");
   srand(0);
     for (int i =0 ; i< MAX; i++) {
           vector [i] =  (rand() %
@@ -122,7 +93,7 @@ int recorrido_datos [numeroHilos];
       arr_datos[i].final = recorrido_datos[i] +comienzo -1;
       comienzo = recorrido_datos[i] +comienzo;
     } 
-
+printf("\n-----Rango de los hilos-------\n");
   for (int i=0; i<numeroHilos; i++) {
     printf("Hilo %d rango [%d,%d]\n",arr_datos[i].id, arr_datos[i].comienzo, arr_datos[i].final);
   }
@@ -145,16 +116,17 @@ printf("\n\n");
   if (pthread_join(tids[i], NULL) !=0 ){
     printf("ERROR: funcion pthread_join de hilos que buscan el numero");
     exit(EXIT_FAILURE);
+  }  
   }
-    
-  }
+  
+  printf("\nHilos terminados......\n");
   
   if(posicion == -1)
   {
-  
-    printf("\nNo esta el dato en el vector\n");
+    printf("\nEl dato no encuentra en el vector\n");
   } else {
-    printf("\n Posicion del elemento en el vector : %d\n", posicion);
+    printf("\nID Thread: %lu\n", IDproceso);
+    printf("\nPosicion del elemento en el vector : %d\n", posicion);
   }
     
 
