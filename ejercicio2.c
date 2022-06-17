@@ -57,7 +57,12 @@ struct Dato argumento = *(struct Dato*) argcthread;
 
 
 int main(int argc, char *argv[]) {
- int lower = 0, upper = 9, count = 1;
+  if ((argc -1) != 2) {
+    printf("ERROR: La cantidad de datos ingresada no es valida ");
+    exit(EXIT_FAILURE);
+  }
+  
+  int lower = 0, upper = 9, count = 1;
 pthread_t tid_signal;
    int VALUE = 0;
 
@@ -123,9 +128,9 @@ printf("\n\n");
   
   if(posicion == -1)
   {
-    printf("\nEl dato no encuentra en el vector\n");
+    printf("\n[No encontrado]\n");
   } else {
-    printf("\nID Thread: %lu\n", IDproceso);
+    printf("\nID Thread: %lu", IDproceso);
     printf("\nPosicion del elemento en el vector : %d\n", posicion);
   }
     
