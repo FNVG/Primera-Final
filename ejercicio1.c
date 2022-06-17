@@ -33,11 +33,11 @@ struct Dato argumento = *(struct Dato*) argcthread;
   while (next_thread != argumento.id) 
       pthread_cond_wait(&condprint, &mutex);
 
-  int factorial = 1;
+  unsigned long long factorial = 1;
   for(int x=1;x<=argumento.number;x++)
        factorial=factorial*x;
   
-  printf("Factorial de %d es %d\n",argumento.number, factorial);
+  printf("Factorial de %d es %llu\n",argumento.number, factorial);
 next_thread++;
 pthread_cond_broadcast(&condprint);
 pthread_mutex_unlock (&mutex);
