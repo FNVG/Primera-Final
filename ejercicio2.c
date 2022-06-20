@@ -24,7 +24,7 @@ pthread_mutex_t mutexB = PTHREAD_MUTEX_INITIALIZER;
 bool encontrado = false;
 sem_t semaphore = {0};
 pthread_t IDproceso;
-
+int id;
 
 struct Dato {
  int id;
@@ -43,8 +43,8 @@ struct Dato argumento = *(struct Dato*) argcthread;
   while ((i <= argumento.final) && (!encontrado)) {  
     if (vector[i] == numeroBuscado) {
      posicion = i;
-     printf("\n[Encontrado] Hilo %d encontro el numero\n", 
-   argumento.id);   
+     printf("\n[Encontrado]\n");
+      id = argumento.id;
     IDproceso = pthread_self();
     encontrado = true;
       }
@@ -61,6 +61,10 @@ int main(int argc, char *argv[]) {
     printf("ERROR: La cantidad de datos ingresada no es valida ");
     exit(EXIT_FAILURE);
   }
+if (atoi(argv[2]) > MAX) {
+  printf("ERROR: Numero de hilos no debe superar a la cantidad de elementos");
+  exit(EXIT_FAILURE);
+}
   
   int lower = 0, upper = 9, count = 1;
 pthread_t tid_signal;
@@ -75,6 +79,7 @@ pthread_t tid_signal;
     }
 printf("\n\n");
   numeroBuscado = atoi(argv[1]);
+  
   numeroHilos = atoi(argv[2]);
      
    int c = MAX / numeroHilos;
@@ -124,13 +129,14 @@ printf("\n\n");
   }  
   }
   
-  printf("\nHilos terminados......\n");
+  printf("\nHilos terminados......\n\n\n");
   
   if(posicion == -1)
   {
     printf("\n[No encontrado]\n");
   } else {
-    printf("\nID Thread: %lu", IDproceso);
+    printf("\nEl hilo %d encontro el numero\n", id);
+    printf("\nID Thread: %lu\n", IDproceso);
     printf("\nPosicion del elemento en el vector : %d\n", posicion);
   }
     
